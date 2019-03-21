@@ -1,8 +1,10 @@
 import requests
 import pprint
 import json
+import csv
+import time
+from config import API_KEY
 
-API_KEY = '904NLHZ1GSL4PIRX'
 a = input("Enter the symbol !! ")
 symbol = a.upper()
 how_many_days = input("Enter how many days from today !!")
@@ -19,15 +21,15 @@ if response.status_code == 200:
             break
         day.append(i)
    
+print("Preparing CSV....")
 
+
+myData = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+with open('stock_info_'+symbol+ '.csv', mode='w') as csvFile:
+    writer = csv.writer(csvFile)
+    writer.writerow(myData)
     for j in day:
-        print("SYMBOL : " + result['Meta Data']['2. Symbol'])
-        print("Date : " + j)
-        print("OPEN : "+ result["Time Series (Daily)"][j]["1. open"])
-        print("High : "+ result["Time Series (Daily)"][j]["2. high"])
-        print("low : "+ result["Time Series (Daily)"][j]["3. low"])
-        print("close : "+ result["Time Series (Daily)"][j]["4. close"])
-        print("Volume : "+ result["Time Series (Daily)"][j]["5. volume"])
-        print('***********************************')
-
-    
+        writer.writerow([j, result["Time Series (Daily)"][j]["1. open"], result["Time Series (Daily)"][j]["2. high"], result["Time Series (Daily)"][j]["3. low"], result["Time Series (Daily)"][j]["4. close"], result["Time Series (Daily)"][j]["5. volume"]])
+csvFile.close()
+time.sleep(2)
+print("DONE !!")
